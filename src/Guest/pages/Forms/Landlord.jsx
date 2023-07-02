@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import "./Landlord.css";
+import "./form.css";
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { addDoc, collection } from 'firebase/firestore'
+import { auth, db, storage } from "../../../config/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export default function Landlord({ isOpen, onClose }) {
   const [name, setName] = useState("");
@@ -10,55 +14,45 @@ export default function Landlord({ isOpen, onClose }) {
   const [photo, setPhoto] = useState("");
   const [proof, setProof] = useState("");
   const [password, setPassword] = useState("");
+  const landlordCollectionRef = collection(db, "landlords");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleContactChange = (e) => {
-    setContact(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const handlePhotoChange = (e) => {
-    setPhoto(e.target.value);
-  };
-
-  const handleProofChange = (e) => {
-    setProof(e.target.files[0]);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log("Name:", name);
-    console.log("Contact:", contact);
-    console.log("Email:", email);
-    console.log("Address:", address);
-    console.log("Photo:", photo);
-    console.log("Proof:", proof);
-    console.log("Password:", password);
-    // Reset the form
-    setName("");
-    setContact("");
-    setEmail("");
-    setAddress("");
-    setPhoto("");
-    setProof("");
-    setPassword("");
-    // Close the modal
-    onClose();
+    setIsLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      const uid = auth?.currentUser?.uid;
+      let imageUrl = "";
+      let proofUrl = "";
+      const imageRef = ref(storage, `landlordPhoto/${uid}`);
+      const proofRef = ref(storage, `landlordProof/${uid}`);
+
+      await uploadBytes(imageRef, photo);
+      await uploadBytes(proofRef, proof);
+
+      const url = await getDownloadURL(imageRef);
+      imageUrl = url;
+
+      const url2 = await getDownloadURL(proofRef);
+      proofUrl = url2;
+
+      await addDoc(landlordCollectionRef, {
+        landlord_id: uid,
+        landlord_name: name,
+        landlord_contact: contact,
+        landlord_email: email,
+        landlord_address: address,
+        landlord_photo: imageUrl,
+        landlord_proof: proofUrl
+      });
+
+      setIsLoading(false);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -66,7 +60,7 @@ export default function Landlord({ isOpen, onClose }) {
       <Modal
         isOpen={isOpen}
         onRequestClose={onClose}
-        className="registration-modal"
+        className="registration-modal landlord"
       >
         <h2>Landlord Registration</h2>
         <form onSubmit={handleSubmit}>
@@ -74,8 +68,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Name:</label>
             <input
               type="text"
-              value={name}
-              onChange={handleNameChange}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
@@ -83,8 +76,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Contact:</label>
             <input
               type="text"
-              value={contact}
-              onChange={handleContactChange}
+              onChange={(e) => setContact(e.target.value)}
               required
             />
           </div>
@@ -92,8 +84,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Email:</label>
             <input
               type="email"
-              value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -101,8 +92,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Address:</label>
             <input
               type="text"
-              value={address}
-              onChange={handleAddressChange}
+              onChange={(e) => setAddress(e.target.value)}
               required
             />
           </div>
@@ -110,8 +100,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Photo:</label>
             <input
               type="file"
-              accept=".pdf, .doc, .docx"
-              onChange={handlePhotoChange}
+              onChange={(e) => setPhoto(e.target.files[0])}
               required
             />
           </div>
@@ -119,8 +108,7 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Proof:</label>
             <input
               type="file"
-              accept=".pdf, .doc, .docx"
-              onChange={handleProofChange}
+              onChange={(e) => setProof(e.target.files[0])}
               required
             />
           </div>
@@ -128,12 +116,13 @@ export default function Landlord({ isOpen, onClose }) {
             <label>Password:</label>
             <input
               type="password"
-              value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <button type="submit">Register</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? "Loading..." : "Register"}
+          </button>
         </form>
         <button onClick={onClose} className="close-button"></button>
       </Modal>

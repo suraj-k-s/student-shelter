@@ -2,8 +2,8 @@ import "./mailList.css";
 
 const MailList = () => {
   return (
-    <div className="mail">
-      <h1 className="mailTitle">Save time, save money!</h1>
+    <div className="mailL">
+      <h1 className="mailTitle">Rent Property, Earn money!</h1>
     </div>
   );
 };

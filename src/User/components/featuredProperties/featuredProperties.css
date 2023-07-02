@@ -1,6 +1,7 @@
 .fp {
   width: 100%;
-  max-width: 1024px;
+  max-width: 1244px;
+  overflow-y: scroll;
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -13,8 +14,11 @@
   flex-direction: column;
 }
 
+.fp::-webkit-scrollbar {
+  display: none;
+}
 .fpImg{
-  width: 100%;
+  width: 260px;
   height: 250px;
   object-fit: cover;
 }
@@ -44,3 +48,4 @@
 .fpRating>span{
   font-size: 14px;
 }
+

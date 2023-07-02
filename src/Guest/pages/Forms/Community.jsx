@@ -6,14 +6,13 @@ import { addDoc, collection } from 'firebase/firestore'
 import { auth, db, storage } from "../../../config/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-export default function User({ isOpen, onClose }) {
+export default function Community({ isOpen, onClose }) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
   const [photo, setPhoto] = useState("");
   const [password, setPassword] = useState("");
-  const userCollectionRef = collection(db, "users");
+  const communityCollectionRef = collection(db, "communities");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -23,20 +22,19 @@ export default function User({ isOpen, onClose }) {
       await createUserWithEmailAndPassword(auth, email, password);
       const uid = auth?.currentUser?.uid;
       let imageUrl = "";
-      const imageRef = ref(storage, `user/${uid}`);
+      const imageRef = ref(storage, `community/${uid}`);
 
       await uploadBytes(imageRef, photo);
 
       const url = await getDownloadURL(imageRef);
       imageUrl = url;
 
-      await addDoc(userCollectionRef, {
-        user_id: uid,
-        user_name: name,
-        user_contact: contact,
-        user_email: email,
-        user_address: address,
-        user_photo: imageUrl
+      await addDoc(communityCollectionRef, {
+        community_id: uid,
+        community_name: name,
+        community_contact: contact,
+        community_email: email,
+        community_photo: imageUrl
       });
 
       setIsLoading(false);
@@ -52,9 +50,9 @@ export default function User({ isOpen, onClose }) {
       <Modal
         isOpen={isOpen}
         onRequestClose={onClose}
-        className="registration-modal user"
+        className="registration-modal community"
       >
-        <h2>User Registration</h2>
+        <h2>Community Registration</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Name:</label>
@@ -77,14 +75,6 @@ export default function User({ isOpen, onClose }) {
             <input
               type="email"
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Address:</label>
-            <input
-              type="text"
-              onChange={(e) => setAddress(e.target.value)}
               required
             />
           </div>
