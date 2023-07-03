@@ -56,7 +56,7 @@ export default function Login({ isOpen, onClose }) {
       }
     }
 
-    // onClose();
+     onClose();
   };
 
   const forgotPassword = () => {

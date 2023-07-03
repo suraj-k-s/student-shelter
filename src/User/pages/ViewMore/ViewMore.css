@@ -1,0 +1,53 @@
+.view-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.view-coloumn{
+    height: 400px;
+    width: 400px;
+    margin: 20px;
+}
+
+.view-image{
+    height: 400px;
+    width: 400px;
+}
+
+.view-map{
+    width: 100%;
+    height: 100%;
+}
+.view-table{
+    width: 100%;
+    height: 100%;
+}
+.view-table>tbody>tr>td{
+    padding: 10px;
+    background-color: aliceblue;
+}
+
+.view-link{
+    position: relative;
+    top: -6px;
+   margin: 20px;
+}
+
+.view-button{
+    position: relative;
+    top: -6px;
+    margin-left: 30px;
+    border: none;
+    background: none;
+    font-size: 15px;
+    color: blue;
+}
+
+.saved{
+    color: green;
+    font-size: 15px;
+    text:"Saved";
+}

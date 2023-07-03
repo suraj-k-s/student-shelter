@@ -1,69 +1,68 @@
+import { useEffect } from "react";
 import "./featuredProperties.css";
+import { collection, getDocs, query } from "firebase/firestore";
+import { db } from "../../../config/firebase";
+import { useState } from "react";
 
 const FeaturedProperties = () => {
+  const [propertyList, setPropertyList] = useState([]);
+
+  useEffect(() => {
+    getCount();
+  }, []);
+
+  const getCount = async () => {
+    const propertyCountQuerySnapshot = await getDocs(
+      query(collection(db, "properties"))
+    );
+    if (propertyCountQuerySnapshot.docs.length > 0) {
+      const data = propertyCountQuerySnapshot.docs.map((doc) => doc.data());
+      setPropertyList(data);
+    }
+  };
+
   return (
-    <>
-    
     <div className="fp">
-      <div className="fpItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/hotel/square600/13125860.webp?k=e148feeb802ac3d28d1391dad9e4cf1e12d9231f897d0b53ca067bde8a9d3355&o=&s=1"
-          alt=""
-          className="fpImg"
-        />
-        <span className="fpName">Aparthotel Stare Miasto</span>
-        <span className="fpCity">Madrid</span>
-        <span className="fpPrice">Starting from $120</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excellent</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/hotel/max1280x900/215955381.jpg?k=ff739d1d9e0c8e233f78ee3ced82743ef0355e925df8db7135d83b55a00ca07a&o=&hp=1"
-          alt=""
-          className="fpImg"
-        />
-        <span className="fpName">Comfort Suites Airport</span>
-        <span className="fpCity">Austin</span>
-        <span className="fpPrice">Starting from $140</span>
-        <div className="fpRating">
-          <button>9.3</button>
-          <span>Exceptional</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/449317245.jpg?k=79b59447ab944165bdbe5bcc902c6d4ddc87953d5c3d9003c0f5f96200935c9d&o=&hp=1"
-          alt=""
-          className="fpImg"
-        />
-        <span className="fpName">Four Seasons Hotel</span>
-        <span className="fpCity">Lisbon</span>
-        <span className="fpPrice">Starting from $99</span>
-        <div className="fpRating">
-          <button>8.8</button>
-          <span>Excellent</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/hotel/max1280x900/322658536.jpg?k=3fffe63a365fd0ccdc59210188e55188cdb7448b9ec1ddb71b0843172138ec07&o=&hp=1"
-          alt=""
-          className="fpImg"
-        />
-        <span className="fpName">Hilton Garden Inn</span>
-        <span className="fpCity">Berlin</span>
-        <span className="fpPrice">Starting from $105</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excellent</span>
-        </div>
-      </div>
+      {propertyList.map((item, key) => {
+        if ((key + 1) % 4 === 0) {
+          return (
+            <>
+              <div className="fpItem" key={key}>
+                <img
+                  src={item.property_photo}
+                  alt=""
+                  className="fpImg"
+                />
+                <span className="fpName">Aparthotel Stare Miasto</span>
+                <span className="fpCity">Madrid</span>
+                <span className="fpPrice">Starting from $120</span>
+                <div className="fpRating">
+                  <button>8.9</button>
+                  <span>Excellent</span>
+                </div>
+              </div>
+              <br /> {/* Add line break to start a new row */}
+            </>
+          );
+        } else {
+          return (
+            <div className="fpItem" key={key}>
+              <img
+                src={item.property_photo}
+                alt=""
+                className="fpImg"
+              />
+              <span className="fpName">{item.property_name}</span>
+              <span className="fpCity">{item.property_place}</span>
+              <span className="fpPrice">Starting from ${item.property_price}</span>
+              <div className="fpRating">
+                Rooms : {item.property_rooms}
+              </div>
+            </div>
+          );
+        }
+      })}
     </div>
-    </>
-    
   );
 };
 

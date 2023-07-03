@@ -15,7 +15,7 @@ const Navbar = () => {
         <span className="logo">STUDENT-SHELTER</span>
         <div className="navItems">
           <button className="navButton"><Link to={"/User"}>Home</Link></button>
-          <button className="navButton"><Link to={"/User/Communities"}>Join Communities</Link></button>
+          <button className="navButton"><Link to={"/User/Post"}>Posts</Link></button>
           <button className="navButton"><Link to={"/User/Favourite"}>Favourite</Link></button>
           <button className="navButton" onClick={logoutUser}>Logout</button>
         </div>

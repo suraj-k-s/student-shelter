@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "./featuredProperties.css";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import { useState } from "react";
 
@@ -33,15 +33,14 @@ const FeaturedProperties = () => {
                   alt=""
                   className="fpImg"
                 />
-                <span className="fpName">Aparthotel Stare Miasto</span>
-                <span className="fpCity">Madrid</span>
-                <span className="fpPrice">Starting from $120</span>
+                <span className="fpName">{item.property_name}</span>
+                <span className="fpCity">{item.property_place}</span>
+                <span className="fpPrice">Starting from ${item.property_price}</span>
                 <div className="fpRating">
-                  <button>8.9</button>
-                  <span>Excellent</span>
+                  Rooms : {item.property_rooms}
                 </div>
               </div>
-              <br /> {/* Add line break to start a new row */}
+              <br />
             </>
           );
         } else {

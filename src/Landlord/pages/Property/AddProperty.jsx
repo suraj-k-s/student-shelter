@@ -94,7 +94,6 @@ const AddPropertyForm = () => {
             return;
         }
 
-        let imageUrl = "";
         const imageRef = ref(storage, `propertyPhoto/${v4()}`);
         await uploadBytes(imageRef, photo);
         const url = await getDownloadURL(imageRef);

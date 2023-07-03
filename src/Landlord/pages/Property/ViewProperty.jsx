@@ -5,10 +5,11 @@ import { db } from "../../../config/firebase";
 import { useState } from "react";
 
 export default function ViewProperty() {
-    const [landlordId, setLandlordId] = useState(sessionStorage.getItem("lid"));
+    const [landlordId, setLandlordId] = useState("");
     const [propertyList, setPropertyList] = useState([]);
 
     useEffect(() => {
+        setLandlordId(sessionStorage.getItem("lid"));
         getCount();
     }, []);
 

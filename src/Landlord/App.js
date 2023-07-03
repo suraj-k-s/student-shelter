@@ -9,7 +9,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
 import Featured from "./components/featuredProperties/FeaturedProperties";
 import ViewProperty from "./pages/Property/ViewProperty";
-import ViewRequest from "./pages/Property/ViewRequest";
 
 function App() {
   const [checkStatus, setCheckStatus] = useState(true);
@@ -42,7 +41,6 @@ function App() {
           } />
           <Route path="/AddProperty" element={<AddProperty />} />
           <Route path="/ViewProperty" element={<ViewProperty />} />
-          <Route path="/ViewRequests" element={<ViewRequest />} />
         </Routes>
         <MailList />
         <Footer />

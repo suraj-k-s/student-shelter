@@ -4,10 +4,13 @@ import Footer from "./components/footer/Footer";
 import MailList from "./components/mailList/MailList";
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../config/firebase";
 import Featured from "./components/featuredProperties/FeaturedProperties";
 import Search from "./pages/Search/Search";
+import ViewMore from "./pages/ViewMore/ViewMore";
+import Favourite from "./pages/Favourite/Favourite";
+import ViewPost from "./pages/ViewMore/ViewPost";
 
 function App() {
   const [checkStatus, setCheckStatus] = useState(true);
@@ -38,6 +41,9 @@ function App() {
             </>
           } />
           <Route path="/Search" element={<Search />} />
+          <Route path="/Post" element={<ViewPost />} />
+          <Route path="/ViewMore/:id" element={<ViewMore />} />
+          <Route path="/Favourite" element={<Favourite />} />
         </Routes>
         <MailList />
         <Footer />
