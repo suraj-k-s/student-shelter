@@ -7,43 +7,27 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./Landlord.css";
+import { collection, getDocs, query } from "firebase/firestore";
+import { db } from "../../../config/firebase";
 
-function createData(name, contact, email, location) {
-  return { name, contact, email, location };
-}
-
-const rows = [
-  createData("Jonathan", "+44 (0) 1223 456979", "jonathan@gmail.com", "London"),
-  createData("Emily ", "+44 (0) 1463 39345679 ", "emily@gmail.com", "England"),
-  createData(
-    "Tony Stark",
-    "+44 (0) 1223 3123979 ",
-    "tony@gmail.com",
-    "Scotland"
-  ),
-  createData("Jenny", "+44 (0) 1433 39479 ", "jenny@gmail.com", "Wales"),
-];
-
-const makeStyle = (status) => {
-  if (status === "Approved") {
-    return {
-      background: "rgb(145 254 159 / 47%)",
-      color: "green",
-    };
-  } else if (status === "Pending") {
-    return {
-      background: "#ffadad8f",
-      color: "red",
-    };
-  } else {
-    return {
-      background: "#59bfff",
-      color: "white",
-    };
-  }
-};
 
 export default function BasicTable() {
+
+  const [landlordsList, setlandlordsList] = React.useState([]);
+
+  React.useEffect(() => {
+    getCount();
+  }, []);
+
+  const getCount = async () => {
+    const landlordsCountQuerySnapshot = await getDocs(
+      query(collection(db, "landlords"))
+    );
+    if (landlordsCountQuerySnapshot.docs.length > 0) {
+      const data = landlordsCountQuerySnapshot.docs.map((doc) => doc.data());
+      setlandlordsList(data);
+    }
+  };
   return (
     <div className="Table">
       <h3>Registered Landloards</h3>
@@ -51,7 +35,7 @@ export default function BasicTable() {
         component={Paper}
         style={{ boxShadow: "0px 13px 20px 0px #80808029" }}
       >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650,overflowY :"scroll" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
@@ -62,7 +46,7 @@ export default function BasicTable() {
             </TableRow>
           </TableHead>
           <TableBody style={{ color: "white" }}>
-            {rows.map((row, key) => (
+            {landlordsList.map((row, key) => (
               <TableRow
                 key={key + 1}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -70,16 +54,12 @@ export default function BasicTable() {
                 <TableCell component="th" scope="row">
                   {key + 1}
                 </TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.contact}</TableCell>
+                <TableCell align="left">{row.landlord_name}</TableCell>
+                <TableCell align="left">{row.landlord_contact}</TableCell>
                 <TableCell align="left">
-                  <span className="status" style={makeStyle(row.status)}>
-                    {row.email}
-                  </span>
+                  <span className="status" >{row.landlord_email}</span>
                 </TableCell>
-                <TableCell align="left" className="Details">
-                  {row.location}
-                </TableCell>
+                <TableCell align="left" className="Details">{row.landlord_address}</TableCell>
               </TableRow>
             ))}
           </TableBody>

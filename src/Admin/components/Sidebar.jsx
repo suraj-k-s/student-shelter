@@ -4,7 +4,7 @@ import { UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);
@@ -19,6 +19,13 @@ const Sidebar = () => {
       left: "-60%",
     },
   };
+
+  const navigate= useNavigate();
+
+  const logoutAdmin = ()=>{
+    sessionStorage.removeItem('aid');
+    navigate("/");
+  }
   return (
     <>
       <div
@@ -43,20 +50,18 @@ const Sidebar = () => {
         <div className="menu">
           {SidebarData.map((item, index) => {
             return (
-              <div
-                className={selected === index ? "menuItem active" : "menuItem"}
-                key={index}
-                onClick={() => setSelected(index)}
-              >
-                <item.icon />
-                <Link to={item.path}>
+              <Link to={item.path}  className={selected === index ? "menuItem active" : "menuItem"} key={index}
+              onClick={() => setSelected(index)}>
+               
+                  <item.icon />
+
                   <span>{item.heading}</span>
-                </Link>
-              </div>
+
+              </Link>
             );
           })}
           {/* signoutIcon */}
-          <div className="menuItem">
+          <div className="menuItem" onClick={logoutAdmin}>
             <UilSignOutAlt />
           </div>
         </div>
